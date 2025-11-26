@@ -1,0 +1,14 @@
+{ "columns":50,
+ "image":"..\/Downloads\/EPIC RPG World Pack - Crypt V.1.6\/EPIC RPG World Pack - Crypt V.1.6\/Tilesets\/Tileset-Terrain.png",
+ "imageheight":1856,
+ "imagewidth":1600,
+ "margin":0,
+ "name":"main_tileset",
+ "spacing":0,
+ "tilecount":2900,
+ "tiledversion":"1.11.2",
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset",
+ "version":"1.10"
+}

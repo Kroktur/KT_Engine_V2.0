@@ -1,0 +1,26 @@
+
+
+cmake_minimum_required(VERSION 3.10.0)
+project(KT_Engie_V2.0 VERSION 1.0.0)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/app/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/app/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/app/bin)
+
+if (WIN32)
+    # vcpkg configuration
+    set(VCPKG_ROOT $ENV{VCPKG_ROOT_DIR})
+    set(VCPKG_TARGET_TRIPLET "x64-windows")
+endif (WIN32)
+
+include(${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake)
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+
+add_subdirectory(sample)
+add_subdirectory(GameEngine)
+
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT sample)

@@ -1,0 +1,14 @@
+{ "columns":14,
+ "image":"..\/Downloads\/EPIC RPG World Pack - Crypt V.1.6\/EPIC RPG World Pack - Crypt V.1.6\/Props\/ground-runes.png",
+ "imageheight":384,
+ "imagewidth":448,
+ "margin":0,
+ "name":"rune_tileset",
+ "spacing":0,
+ "tilecount":168,
+ "tiledversion":"1.11.2",
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset",
+ "version":"1.10"
+}

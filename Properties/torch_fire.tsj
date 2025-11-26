@@ -1,0 +1,14 @@
+{ "columns":8,
+ "image":"..\/Ressources\/Sprite\/torch_fire.png",
+ "imageheight":64,
+ "imagewidth":512,
+ "margin":0,
+ "name":"torch_fire",
+ "spacing":0,
+ "tilecount":8,
+ "tiledversion":"1.11.2",
+ "tileheight":64,
+ "tilewidth":64,
+ "type":"tileset",
+ "version":"1.10"
+}

@@ -1,0 +1,14 @@
+{ "columns":36,
+ "image":"..\/Downloads\/EPIC RPG World Pack - Crypt V.1.6\/EPIC RPG World Pack - Crypt V.1.6\/Props\/Atlas-Props.png",
+ "imageheight":960,
+ "imagewidth":1152,
+ "margin":0,
+ "name":"Atlas-Props",
+ "spacing":0,
+ "tilecount":1080,
+ "tiledversion":"1.11.2",
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset",
+ "version":"1.10"
+}
