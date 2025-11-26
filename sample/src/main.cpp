@@ -3,7 +3,7 @@
 #include <iostream>
 #include "Math/Vector3.h"
 #include "Tools/PrimaryTypeTrait.h"
-
+#include "Math/Angle.h"
 template<typename... Types>
 struct toto
 {

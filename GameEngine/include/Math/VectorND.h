@@ -19,7 +19,7 @@ namespace KT
 		BACKWARD
 	};
 
-	template<typename type, size_t size>
+	template<typename type, size_t size> requires is_arithmetic_v<type>
 	class VectorND
 	{
 	public:
@@ -76,7 +76,7 @@ namespace KT
 		std::array<type, size> m_data;
 	};
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	template <Dir dir> requires (size >= 2)
 		constexpr typename VectorND<type, size>::class_type VectorND<type, size>::Dir()
 	{
@@ -128,19 +128,19 @@ namespace KT
 
 
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	template <typename ... Arg> requires (sizeof...(Arg) <= size) && (... && (KT::is_arithmetic_v<Arg>))
 		VectorND<type, size>::VectorND(const Arg&... args) : m_data(std::array<type, size>{static_cast<type>(args)...})
 	{
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	VectorND<type, size>::VectorND()
 	{
 		std::fill(m_data.begin(), m_data.end(), type{});
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	VectorND<type, size>::VectorND(const class_type& lhs, const class_type& rhs) : m_data(std::array<type, size>{})
 	{
 		for (size_t i = 0; i < m_data.size(); ++i)
@@ -149,13 +149,13 @@ namespace KT
 		}
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	size_t VectorND<type, size>::Size()
 	{
 		return size;
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	bool VectorND<type, size>::IsZero() const
 	{
 		for (auto i = 0; i < size; ++i)
@@ -173,7 +173,7 @@ namespace KT
 		return true;
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	bool VectorND<type, size>::operator==(const class_type& other) const
 	{
 		for (auto i = 0; i < size; ++i)
@@ -190,14 +190,14 @@ namespace KT
 		}
 		return true;
 	}
-
-	template <typename type, size_t size>
+	 
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	bool VectorND<type, size>::operator!=(const class_type& other) const
 	{
 		return !(*this == other);
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::class_type VectorND<type, size>::operator+(const class_type& other) const
 	{
 		class_type result;
@@ -208,7 +208,7 @@ namespace KT
 		return result;
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::class_type VectorND<type, size>::
 		operator-(const class_type& other) const
 	{
@@ -220,7 +220,7 @@ namespace KT
 		return result;
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::class_type& VectorND<type, size>::operator+=(const class_type& other)
 	{
 		for (auto i = 0; i < size; ++i)
@@ -230,7 +230,7 @@ namespace KT
 		return *this;
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::class_type& VectorND<type, size>::operator-=(const class_type& other)
 	{
 		for (auto i = 0; i < size; ++i)
@@ -240,7 +240,7 @@ namespace KT
 		return *this;
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::class_type VectorND<type, size>::operator*(const value_type& factor) const
 	{
 		class_type result;
@@ -251,7 +251,7 @@ namespace KT
 		return result;
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::class_type VectorND<type, size>::operator/(const value_type& divider) const
 	{
 		if (divider == 0)
@@ -264,7 +264,7 @@ namespace KT
 		return result;
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::class_type& VectorND<type, size>::operator*=(const value_type& factor)
 	{
 		for (auto i = 0; i < size; ++i)
@@ -274,7 +274,7 @@ namespace KT
 		return *this;
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::class_type& VectorND<type, size>::operator/=(const value_type& divider)
 	{
 		if (divider == 0)
@@ -286,31 +286,31 @@ namespace KT
 		return *this;
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::iterator_type VectorND<type, size>::begin()
 	{
 		return m_data.begin();
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::iterator_type VectorND<type, size>::end()
 	{
 		return m_data.end();
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::const_iterator_type VectorND<type, size>::begin() const
 	{
 		return m_data.begin();
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::const_iterator_type VectorND<type, size>::end() const
 	{
 		return m_data.end();
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	bool VectorND<type, size>::operator<(const class_type& other) const
 	{
 		for (size_t i = 0; i < size; ++i)
@@ -320,7 +320,7 @@ namespace KT
 		return false;
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	bool VectorND<type, size>::operator>(const class_type& other) const
 	{
 		for (size_t i = 0; i < size; ++i)
@@ -330,13 +330,13 @@ namespace KT
 		return false;
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::value_type VectorND<type, size>::Length() const
 	{
 		return std::sqrt(SquareLength());
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::value_type VectorND<type, size>::SquareLength() const
 	{
 		value_type result = value_type{};
@@ -345,7 +345,7 @@ namespace KT
 		return  result;
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::class_type VectorND<type, size>::normalize() const
 	{
 		if (IsZero())
@@ -354,7 +354,7 @@ namespace KT
 		return (*this) / length;
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::class_type& VectorND<type, size>::selfNormalize()
 	{
 		if (IsZero())
@@ -363,13 +363,13 @@ namespace KT
 		return (*this) /= length;
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	const typename VectorND<type, size>::value_type& VectorND<type, size>::operator[](const size_t& i) const
 	{
 		return m_data[i];
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::value_type& VectorND<type, size>::at(const size_t& index)
 	{
 		if (index >= size)
@@ -377,7 +377,7 @@ namespace KT
 		return m_data.at(index);
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	const typename VectorND<type, size>::value_type& VectorND<type, size>::at(const size_t& index) const
 	{
 		if (index >= size)
@@ -385,13 +385,13 @@ namespace KT
 		return m_data.at(index);
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::value_type& VectorND<type, size>::operator[](const size_t& i)
 	{
 		return m_data[i];
 	}
 
-	template <typename type, size_t size>
+	template <typename type, size_t size> requires is_arithmetic_v<type>
 	typename VectorND<type, size>::value_type VectorND<type, size>::Dot(const class_type& other) const
 	{
 		value_type result = type{};
@@ -402,14 +402,15 @@ namespace KT
 		return result;
 	}
 
-	template<typename type, size_t size>
-	std::ostream& operator<<(std::ostream& os, const VectorND<type, size>& vec)
+
+}
+template<typename type, size_t size>
+std::ostream& operator<<(std::ostream& os, const KT::VectorND<type, size>& vec)
+{
+	for (size_t i = 0; i < size; ++i)
 	{
-		for (size_t i = 0; i < size; ++i)
-		{
-			os << vec[i] << " ";
-		}
-		os << "\n";
-		return os;
+		os << vec[i] << " "; 
 	}
-}	
+	os << "\n";
+	return os;
+}

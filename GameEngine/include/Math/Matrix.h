@@ -7,7 +7,7 @@
 namespace KT
 {
 
-	template<typename type, size_t height, size_t width = height>
+	template<typename type, size_t height, size_t width = height> requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	class Matrix
 	{
 	public:
@@ -79,56 +79,56 @@ namespace KT
 		std::array< value_type, size> m_data;
 	};
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	Matrix<type, height, width>::Matrix()
 	{
 		std::fill(m_data.begin(), m_data.end(), type{});
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	Matrix<type, height, width>::Matrix(const class_type& other) : m_data(other.m_data) {}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	template <typename ... Args> requires (sizeof...(Args) <= height * width) && (... && (is_arithmetic_v<Args>))
 		Matrix<type, height, width>::Matrix(const Args&... types) : m_data(std::array<value_type, size>{static_cast<type>(types)...}) {}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	Matrix<type, height, width>::Matrix(class_type&& other) noexcept : m_data(std::move(other.m_data))
 	{
 
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	void Matrix<type, height, width>::Clear()
 	{
 		std::fill(m_data.begin(), m_data.end(), type{});
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	size_t Matrix<type, height, width>::Size()
 	{
 		return size;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	size_t Matrix<type, height, width>::Height()
 	{
 		return height;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	size_t Matrix<type, height, width>::Width()
 	{
 		return  width;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	typename Matrix<type, height, width>::value_type Matrix<type, height, width>::CofactorSign(const size_t& row, const size_t& col)
 	{
 		return static_cast<type>(((row + col) % 2 == 0) ? 1 : -1);
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	size_t Matrix<type, height, width>::GetCellIndex(const size_t& row, const size_t& col)
 	{
 		auto index = row * width + col;
@@ -137,31 +137,31 @@ namespace KT
 		return index;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	void Matrix<type, height, width>::SetCell(const size_t& row, const size_t& col, const value_type& data)
 	{
 		GetCell(row, col) = data;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	typename Matrix<type, height, width>::value_type& Matrix<type, height, width>::GetCell(const size_t& row, const size_t& col)
 	{
 		return m_data[GetCellIndex(row, col)];
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	typename Matrix<type, height, width>::value_type const& Matrix<type, height, width>::GetCell(const size_t& row, const size_t& col) const
 	{
 		return m_data[GetCellIndex(row, col)];
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	typename Matrix<type, height, width>::value_type& Matrix<type, height, width>::operator[](const size_t& index)
 	{
 		return m_data[index];
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	typename Matrix<type, height, width>::value_type& Matrix<type, height, width>::At(const size_t& index)
 	{
 		if (index >= size)
@@ -169,13 +169,13 @@ namespace KT
 		return m_data.at(index);
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	typename Matrix<type, height, width>::value_type const& Matrix<type, height, width>::operator[](const size_t& index) const
 	{
 		return m_data[index];
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	typename Matrix<type, height, width>::value_type const& Matrix<type, height, width>::At(const size_t& index) const
 	{
 		if (index >= size)
@@ -183,7 +183,7 @@ namespace KT
 		return m_data.at(index);
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	Matrix<type, height, width>& Matrix<type, height, width>::operator=(const class_type& other)
 	{
 		if (this != &other)
@@ -191,14 +191,14 @@ namespace KT
 		return *this;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	Matrix<type, height, width>& Matrix<type, height, width>::operator=(class_type&& other) noexcept
 	{
 		m_data = std::move(other.m_data);
 		return *this;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	bool Matrix<type, height, width>::operator==(const class_type& other) const
 	{
 		for (auto i = 0; i < size; ++i)
@@ -216,13 +216,13 @@ namespace KT
 		return true;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	bool Matrix<type, height, width>::operator!=(const class_type& other) const
 	{
 		return !(*this == other);
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	Matrix<type, height, width> Matrix<type, height, width>::operator+(const class_type& other) const
 	{
 		Matrix result;
@@ -233,7 +233,7 @@ namespace KT
 		return  result;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	Matrix<type, height, width> Matrix<type, height, width>::operator-(const class_type& other) const
 	{
 		Matrix result;
@@ -244,7 +244,7 @@ namespace KT
 		return  result;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	Matrix<type, height, width>& Matrix<type, height, width>::operator+=(const class_type& other)
 	{
 		for (size_t i = 0; i < size; ++i)
@@ -254,7 +254,7 @@ namespace KT
 		return  *this;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	Matrix<type, height, width>& Matrix<type, height, width>::operator-=(const class_type& other)
 	{
 		for (size_t i = 0; i < size; ++i)
@@ -264,7 +264,7 @@ namespace KT
 		return  *this;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	Matrix<type, height, width> Matrix<type, height, width>::operator*(const value_type& factor) const
 	{
 		Matrix result;
@@ -275,7 +275,7 @@ namespace KT
 		return result;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	Matrix<type, height, width> Matrix<type, height, width>::operator/(const value_type& divider) const
 	{
 		if (divider == 0)
@@ -288,7 +288,7 @@ namespace KT
 		return  result;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	Matrix<type, height, width>& Matrix<type, height, width>::operator*=(const value_type& factor)
 	{
 		for (size_t i = 0; i < size; ++i)
@@ -298,7 +298,7 @@ namespace KT
 		return *this;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	Matrix<type, height, width>& Matrix<type, height, width>::operator/=(const value_type& divider)
 	{
 		if (divider == 0)
@@ -311,7 +311,7 @@ namespace KT
 		return  *this;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	bool Matrix<type, height, width>::IsNull() const
 	{
 		if constexpr (is_floating_type_v<value_type>)
@@ -334,31 +334,31 @@ namespace KT
 		return true;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	typename Matrix<type, height, width>::iterator_type Matrix<type, height, width>::begin()
 	{
 		return m_data.begin();
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	typename Matrix<type, height, width>::iterator_type Matrix<type, height, width>::end()
 	{
 		return m_data.end();
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	typename Matrix<type, height, width>::const_iterator_type Matrix<type, height, width>::begin() const
 	{
 		return m_data.begin();
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	typename Matrix<type, height, width>::const_iterator_type Matrix<type, height, width>::end() const
 	{
 		return m_data.end();
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	bool Matrix<type, height, width>::operator<(const class_type& other) const
 	{
 		for (size_t i = 0; i < size; ++i)
@@ -368,7 +368,7 @@ namespace KT
 		return false;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	bool Matrix<type, height, width>::operator>(const class_type& other) const
 	{
 		for (size_t i = 0; i < size; ++i)
@@ -378,7 +378,7 @@ namespace KT
 		return false;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	template <size_t otherWidth> requires (otherWidth >= 1)
 		Matrix<type, height, otherWidth> Matrix<type, height, width>::MatrixProduct(const Matrix<value_type, width, otherWidth>& other)
 	{
@@ -396,7 +396,7 @@ namespace KT
 		return result;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	Matrix<type, width, height> Matrix<type, height, width>::Transposition() const
 	{
 		Matrix<type, width, height> result;
@@ -410,7 +410,7 @@ namespace KT
 		return result;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	typename Matrix<type, height, width>::class_type Matrix<type, height, width>::Identity()  requires(height == width)
 	{
 
@@ -424,7 +424,7 @@ namespace KT
 		return matrixResult;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	type Matrix<type, height, width>::Det() const   requires(height == width)
 	{
 		if constexpr (height == 1)
@@ -461,7 +461,7 @@ namespace KT
 		}
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	typename Matrix<type, height, width>::class_type Matrix<type, height, width>::Inverse() const  requires(height == width)
 	{
 		auto det = Det();
@@ -471,7 +471,7 @@ namespace KT
 		return  result;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	Matrix<type, width, height> Matrix<type, height, width>::Inverse() const requires (height != width)
 	{
 		auto matrix = *this;
@@ -482,7 +482,7 @@ namespace KT
 		return A_pseudoInv;
 	}
 
-	template <typename type, size_t height, size_t width>
+	template <typename type, size_t height, size_t width>requires is_arithmetic_v<type> && (height > 0 && width > 0)
 	typename Matrix<type, height, width>::class_type Matrix<type, height, width>::CofactorMatrix() const  requires(height == width)
 	{
 		Matrix<type, height, width > result;
@@ -514,23 +514,25 @@ namespace KT
 	}
 
 
-	template<typename type, size_t height, size_t width>
-	std::ostream& operator<<(std::ostream& os, const Matrix<type, height, width >& tab)
-	{
-		if (tab.Size() == 0)
-			return os;
-		for (auto i = 0; i < height; ++i)
-		{
-			os << "(";
-			for (auto j = 0; j < width; ++j)
-			{
-				os << tab.GetCell(i, j);
-				if (j != width - 1)
-					os << ",";
-			}
-			os << ")" << std::endl;
-		}
+}
 
+
+template<typename type, size_t height, size_t width>
+std::ostream& operator<<(std::ostream& os, const KT::Matrix<type, height, width >& tab)
+{
+	if (tab.Size() == 0)
 		return os;
+	for (auto i = 0; i < height; ++i)
+	{
+		os << "(";
+		for (auto j = 0; j < width; ++j)
+		{
+			os << tab.GetCell(i, j);
+			if (j != width - 1)
+				os << ",";
+		}
+		os << ")" << "\n";
 	}
+
+	return os;
 }
