@@ -6,14 +6,16 @@ ECHO.
 ECHO Choisissez une option:
 ECHO 1. Installer/Utiliser vcpkg localement
 ECHO 2. Utiliser un vcpkg existant ailleurs
-ECHO 3. Build
+ECHO 4. Build
+ECHO 3. UpdateLIB
 
 :: Choix de base
-CHOICE /C 123 /N /M "Votre choix (1 ou 2 ou 3 ): "
+CHOICE /C 1234 /N /M "Votre choix (1 ou 2 ou 3 ): "
 
 IF ERRORLEVEL 3 GOTO BUILD
 IF ERRORLEVEL 2 GOTO USE_EXISTING
 IF ERRORLEVEL 1 GOTO INSTALL_LOCAL
+IF ERRORLEVEL 3 GOTO UPDATELIB
 
 :INSTALL_LOCAL
 ECHO.
@@ -69,6 +71,14 @@ IF %ERRORLEVEL% NEQ 0 (
     EXIT /B 1
 )
 
+ECHO Installation de Eigen...
+CALL "%LOCAL_VCPKG_DIR%\vcpkg.exe" install eigen3:x64-windows
+IF %ERRORLEVEL% NEQ 0 (
+    ECHO Erreur lors de l'installation de eigen.
+    PAUSE
+    EXIT /B 1
+)
+
 :SFMLCHOICE
 ECHO 1. Update SFML 
 ECHO 2. Continuer
@@ -97,3 +107,30 @@ ECHO Configuration du projet avec CMake...
 cmake ..
 PAUSE
 EXIT /B 0
+
+
+:UPDATELIB
+ECHO Suppression et réinstallation de SFML...
+CALL "%LOCAL_VCPKG_DIR%\vcpkg.exe" remove sfml:x64-windows
+CALL "%LOCAL_VCPKG_DIR%\vcpkg.exe" install sfml:x64-windows
+IF %ERRORLEVEL% NEQ 0 (
+    ECHO Erreur lors de la mise à jour de SFML.
+    PAUSE
+    EXIT /B 1
+)
+ECHO Suppression et réinstallation de nlohmann_json...
+CALL "%LOCAL_VCPKG_DIR%\vcpkg.exe" remove nlohmann-json:x64-windows
+CALL "%LOCAL_VCPKG_DIR%\vcpkg.exe" install nlohmann-json:x64-windows
+IF %ERRORLEVEL% NEQ 0 (
+    ECHO Erreur lors de la mise à jour de nlohmann_json.
+    PAUSE
+    EXIT /B 1
+)
+ECHO Suppression et réinstallation de Eigen...
+CALL "%LOCAL_VCPKG_DIR%\vcpkg.exe" remove eigen3:x64-windows
+CALL "%LOCAL_VCPKG_DIR%\vcpkg.exe" install eigen3:x64-windows
+IF %ERRORLEVEL% NEQ 0 (
+    ECHO Erreur lors de la mise à jour de Eigen.
+    PAUSE
+    EXIT /B 1
+)

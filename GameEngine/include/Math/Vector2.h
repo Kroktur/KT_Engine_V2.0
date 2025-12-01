@@ -22,8 +22,6 @@ namespace KT
 		Vector2(parent_type&& other) noexcept;
 		class_type& operator=(const class_type&);
 		class_type& operator=(class_type&&) noexcept;
-		class_type& operator=(const parent_type& other);
-		class_type& operator=(parent_type&& other) noexcept;
 		class_type NormalVector() const;
 		type Cross(const class_type& other) const;
 	};
@@ -87,21 +85,6 @@ namespace KT
 	typename Vector2<type>::class_type& Vector2<type>::operator=(class_type&& other) noexcept
 	{
 
-		parent_type::operator=(std::move(other));
-		return *this;
-	}
-
-
-	template <typename type> requires is_arithmetic_v<type>
-	typename Vector2<type>::class_type& Vector2<type>::operator=(const parent_type& other)
-	{
-		parent_type::operator=(other);
-		return *this;
-	}
-
-	template <typename type> requires is_arithmetic_v<type>
-	typename Vector2<type>::class_type& Vector2<type>::operator=(parent_type&& other) noexcept
-	{
 		parent_type::operator=(std::move(other));
 		return *this;
 	}

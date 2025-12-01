@@ -87,7 +87,6 @@ namespace KT
 		static false_type IsBaseOf(...) { return false_type{}; }
 	public:
 		static constexpr bool value = decltype(IsBaseOf(static_cast<derived*>(nullptr)))::value;
-	
 	};
 	template<typename base, typename derived>
 	static constexpr bool is_base_of_v = is_base_of<base, derived>::value;

@@ -8,6 +8,14 @@
 
 namespace KT
 {
+	template<typename vecType>
+	concept is_Vector = requires(vecType vec)
+	{
+		{ vec.Length() };
+		{ vec.Dot(vec) };
+		{ vec.Normalize() };
+		vecType::vector_size_v;
+	};
 
 	enum class Dir
 	{
@@ -34,7 +42,7 @@ namespace KT
 		VectorND(const class_type& lhs, const class_type& rhs);
 		VectorND(const class_type&) = default;
 		VectorND(class_type&&)noexcept = default;
-		~VectorND() = default;
+		virtual ~VectorND() = default;
 		class_type& operator=(const class_type&) = default;
 		class_type& operator=(class_type&&) noexcept = default;
 		static size_t Size();
@@ -62,13 +70,13 @@ namespace KT
 
 		value_type& operator[](const size_t& i);
 		const value_type& operator[](const size_t& i) const;
-		value_type& at(const size_t& index);
-		const value_type& at(const size_t& index) const;
+		value_type& At(const size_t& index);
+		const value_type& At(const size_t& index) const;
 
 		value_type Length() const;
 		value_type SquareLength() const;
-		class_type normalize() const;
-		class_type& selfNormalize();
+		class_type Normalize() const;
+		class_type& SelfNormalize();
 		value_type Dot(const class_type& other) const;
 		template<Dir dir> requires (size >= 2)
 			static constexpr class_type Dir();
@@ -346,7 +354,7 @@ namespace KT
 	}
 
 	template <typename type, size_t size> requires is_arithmetic_v<type>
-	typename VectorND<type, size>::class_type VectorND<type, size>::normalize() const
+	typename VectorND<type, size>::class_type VectorND<type, size>::Normalize() const
 	{
 		if (IsZero())
 			throw std::out_of_range("impossible to Normalize null vector");
@@ -355,7 +363,7 @@ namespace KT
 	}
 
 	template <typename type, size_t size> requires is_arithmetic_v<type>
-	typename VectorND<type, size>::class_type& VectorND<type, size>::selfNormalize()
+	typename VectorND<type, size>::class_type& VectorND<type, size>::SelfNormalize()
 	{
 		if (IsZero())
 			throw std::out_of_range("impossible to Normalize null vector");
@@ -370,7 +378,7 @@ namespace KT
 	}
 
 	template <typename type, size_t size> requires is_arithmetic_v<type>
-	typename VectorND<type, size>::value_type& VectorND<type, size>::at(const size_t& index)
+	typename VectorND<type, size>::value_type& VectorND<type, size>::At(const size_t& index)
 	{
 		if (index >= size)
 			throw std::out_of_range("index not in range");
@@ -378,7 +386,7 @@ namespace KT
 	}
 
 	template <typename type, size_t size> requires is_arithmetic_v<type>
-	const typename VectorND<type, size>::value_type& VectorND<type, size>::at(const size_t& index) const
+	const typename VectorND<type, size>::value_type& VectorND<type, size>::At(const size_t& index) const
 	{
 		if (index >= size)
 			throw std::out_of_range("index not in range");
@@ -401,16 +409,15 @@ namespace KT
 		}
 		return result;
 	}
-
-
-}
-template<typename type, size_t size>
-std::ostream& operator<<(std::ostream& os, const KT::VectorND<type, size>& vec)
-{
-	for (size_t i = 0; i < size; ++i)
+	template<typename type, size_t size>
+	std::ostream& operator<<(std::ostream& os, const KT::VectorND<type, size>& vec)
 	{
-		os << vec[i] << " "; 
+		for (size_t i = 0; i < size; ++i)
+		{
+			os << vec[i] << " ";
+		}
+		os << "\n";
+		return os;
 	}
-	os << "\n";
-	return os;
+
 }

@@ -23,8 +23,6 @@ public:
 	Vector3(parent_type&& other) noexcept;
 	class_type& operator=(const class_type&);
 	class_type& operator=(class_type&&) noexcept;
-	class_type& operator=(const parent_type& other);
-	class_type& operator=(parent_type&& other) noexcept;
 	class_type Cross(const class_type&) const;
 };
 
@@ -93,20 +91,6 @@ typename Vector3<type>::class_type& Vector3<type>::operator=(class_type&& other)
 	return *this;
 }
 
-template <typename type> requires is_arithmetic_v<type>
-typename Vector3<type>::class_type& Vector3<type>::operator=(const parent_type& other)
-{
-	parent_type::operator=(other);
-	return *this;
-}
-
-template <typename type> requires is_arithmetic_v<type>
-typename Vector3<type>::class_type& Vector3<type>::operator=(parent_type&& other) noexcept
-{
-
-	parent_type::operator=(std::move(other));
-	return *this;
-}
 
 template <typename type> requires is_arithmetic_v<type>
 typename Vector3<type>::class_type Vector3<type>::Cross(const class_type& other) const

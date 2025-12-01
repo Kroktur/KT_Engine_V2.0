@@ -217,7 +217,7 @@ namespace KT
 	// Predefined Static Angle Intervals
 	// 0 to 2*PI
 	template<typename type> requires is_floating_type_v<type>
-	using StaticUnsignedInterval = StaticAngleInterval<type, 0, 2 * Math::PI_V<type>>;
+	using StaticUnsignedInterval = StaticAngleInterval<type, static_cast<type>(0), 2 * Math::PI_V<type>>;
 
 	using SUIntervalF = StaticUnsignedInterval<float>;
 	using SUIntervalD = StaticUnsignedInterval<double>;

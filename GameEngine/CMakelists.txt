@@ -46,12 +46,16 @@ find_package(SFML COMPONENTS
     CONFIG REQUIRED
 )
 
+# Cherche le package Eigen
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE
     SFML::Network
     SFML::Graphics
     SFML::Window
     SFML::Audio
     SFML::System
+     Eigen3::Eigen   # Lien avec Eigen
 )
 
 # Mise dans un dossier de solution Visual Studio
