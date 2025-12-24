@@ -11,7 +11,14 @@ namespace KT
 	{
 	public:
 		ISceneManager(WindowType& window);
-		virtual ~ISceneManager();
+		virtual ~ISceneManager()
+		{
+			for (auto& pair : m_sceneMap)
+			{
+				auto& scene = pair.second;
+				scene->Destroy();
+			}
+		}
 		void AddScene(const int& index, std::unique_ptr<ISceneBase<WindowType, Camera>> scene, const bool& start = false);
 		void Run(const Chrono<float>::Time& fixedTime);
 		ISceneBase<WindowType, Camera>& GetScene(const int& index) const;
@@ -32,9 +39,6 @@ namespace KT
 	ISceneManager<WindowType, Camera>::ISceneManager(WindowType& window) :m_currentIndex(0), m_sceneMap(), m_window(window)
 	{
 	}
-
-	template <typename WindowType, typename Camera>
-	ISceneManager<WindowType, Camera>::~ISceneManager() = default;
 
 	template <typename WindowType, typename Camera>
 	void ISceneManager<WindowType, Camera>::AddScene(const int& index,
@@ -110,10 +114,13 @@ namespace KT
 	template <typename WindowType, typename Camera>
 	void ISceneManager<WindowType, Camera>::ChangeSceneIfNeeded()
 	{
+		auto& scene = m_sceneMap[m_currentIndex];
 		// specific private verification for change scene 
-		if (!m_sceneMap[m_currentIndex]->NeedSceneToChange())
+		if (!scene->NeedSceneToChange())
 			return;
-		VerifyIndex(m_sceneMap[m_currentIndex]->GetNextSceneIndex());
+		
+		VerifyIndex(scene->GetNextSceneIndex());
+		scene->ChangeSceneDone();
 	}
 
 	template <typename WindowType, typename Camera>

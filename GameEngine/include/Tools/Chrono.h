@@ -323,7 +323,7 @@ namespace KT
             m_stopTime = Time();
             return GetElapsedTime();
         }
-        return GetPauseTime();
+        return GetElapsedTime();
     }
 
     template <typename type>

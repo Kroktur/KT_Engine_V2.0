@@ -6,11 +6,11 @@
 namespace KT
 {
 
-	template<typename type, size_t size,template <typename>class VectorType> requires is_Vector<VectorType<type>>
+	template<typename type, size_t size, template <typename>class VectorType> requires is_Vector<VectorType<type>>
 	struct AABB
 	{
 		using value_type = type;
-		using class_type = AABB<type,size,VectorType>;
+		using class_type = AABB<type, size, VectorType>;
 		using vector_type = VectorType<type>;
 		AABB();
 		AABB(const vector_type& Amin_, const vector_type& Amax_);
@@ -42,6 +42,8 @@ namespace KT
 		bool Contains(const class_type& other) const;
 		bool Intersects(const class_type& other) const;
 
+		std::vector<vector_type> GetPts() const requires (size == 2 || size == 3);
+
 		vector_type Amin, Amax;
 	};
 
@@ -56,31 +58,31 @@ namespace KT
 	using AABB2DI = AABB2D<int>;
 
 	template<typename type, size_t size, template <typename>class VectorType> requires is_Vector<VectorType<type>>
-	AABB<type, size,VectorType>::AABB() : Amin(), Amax()
+	AABB<type, size, VectorType>::AABB() : Amin(), Amax()
 	{
 
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType> requires is_Vector<VectorType<type>>
-	AABB<type, size,VectorType>::AABB(const vector_type& Amin_, const vector_type& Amax_) :Amin(Amin_), Amax(Amax_)
+	AABB<type, size, VectorType>::AABB(const vector_type& Amin_, const vector_type& Amax_) :Amin(Amin_), Amax(Amax_)
 	{
 
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	AABB<type, size,VectorType>::AABB(const class_type& other) : Amin(other.Amin), Amax(other.Amax )
+	AABB<type, size, VectorType>::AABB(const class_type& other) : Amin(other.Amin), Amax(other.Amax)
 	{
 
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	AABB<type, size,VectorType>::AABB(class_type&& other) noexcept : Amin(std::move(other.Amin)), Amax(std::move(other.Amax))
+	AABB<type, size, VectorType>::AABB(class_type&& other) noexcept : Amin(std::move(other.Amin)), Amax(std::move(other.Amax))
 	{
 
 	}
 
 	template <typename type, size_t size, template <typename> class VectorType> requires is_Vector<VectorType<type>>
-	AABB<type, size, VectorType>::AABB(const std::vector<VectorType<type>>& vector) : Amin(),Amax()
+	AABB<type, size, VectorType>::AABB(const std::vector<VectorType<type>>& vector) : Amin(), Amax()
 	{
 		if (vector.empty())
 			return;
@@ -91,7 +93,7 @@ namespace KT
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	bool AABB<type, size,VectorType>::Contains(const vector_type& vec) const
+	bool AABB<type, size, VectorType>::Contains(const vector_type& vec) const
 	{
 		for (int i = 0; i < vector_type::vector_size_v; ++i)
 		{
@@ -102,7 +104,7 @@ namespace KT
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	bool AABB<type, size,VectorType>::Intersects(const vector_type& vec) const
+	bool AABB<type, size, VectorType>::Intersects(const vector_type& vec) const
 	{
 		for (int i = 0; i < vector_type::vector_size_v; ++i)
 		{
@@ -113,7 +115,7 @@ namespace KT
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	bool AABB<type, size,VectorType>::Contains(const class_type& other) const
+	bool AABB<type, size, VectorType>::Contains(const class_type& other) const
 	{
 		for (int i = 0; i < vector_type::vector_size_v; ++i)
 		{
@@ -124,7 +126,7 @@ namespace KT
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	bool AABB<type, size,VectorType>::Intersects(const class_type& other) const
+	bool AABB<type, size, VectorType>::Intersects(const class_type& other) const
 	{
 		for (int i = 0; i < vector_type::vector_size_v; ++i)
 		{
@@ -134,8 +136,36 @@ namespace KT
 		return true;
 	}
 
+	template <typename type, size_t size, template <typename> class VectorType> requires is_Vector<VectorType<type>>
+	std::vector<typename AABB<type, size, VectorType>::vector_type> AABB<type, size, VectorType>::GetPts() const
+		requires (size == 2 || size == 3)
+	{
+		if constexpr (size == 2)
+		{
+			return {
+				{Amin.x, Amin.y},
+				{Amax.x, Amin.y},
+				{Amin.x, Amax.y},
+				{Amax.x, Amax.y}
+			};
+		}
+		else if constexpr (size == 3)
+		{
+			return {
+				{Amin.x, Amin.y, Amin.z},
+				{Amax.x, Amin.y, Amin.z},
+				{Amin.x, Amax.y, Amin.z},
+				{Amin.x, Amin.y, Amax.z},
+				{Amax.x, Amax.y, Amin.z},
+				{Amin.x, Amax.y, Amax.z},
+				{Amax.x, Amin.y, Amax.z},
+				{Amax.x, Amax.y, Amax.z}
+			};
+		}
+		throw std::runtime_error("Unsupported size for GetPts");
+	}
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	typename AABB<type, size,VectorType>::class_type& AABB<type, size,VectorType>::operator=(const class_type& other)
+	typename AABB<type, size, VectorType>::class_type& AABB<type, size, VectorType>::operator=(const class_type& other)
 	{
 		Amin = other.Amin;
 		Amax = other.Amax;
@@ -143,7 +173,7 @@ namespace KT
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	typename AABB<type, size,VectorType>::class_type& AABB<type, size,VectorType>::operator=(class_type&& other) noexcept
+	typename AABB<type, size, VectorType>::class_type& AABB<type, size, VectorType>::operator=(class_type&& other) noexcept
 	{
 		Amin = std::move(other.Amin);
 		Amax = std::move(other.Amax);
@@ -151,29 +181,29 @@ namespace KT
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	bool AABB<type, size,VectorType>::operator==(const class_type& other) const
+	bool AABB<type, size, VectorType>::operator==(const class_type& other) const
 	{
 		return  Amin == other.Amin && Amax == other.Amax;
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	bool AABB<type, size,VectorType>::operator!=(const class_type& other) const
+	bool AABB<type, size, VectorType>::operator!=(const class_type& other) const
 	{
 		return Amin != other.Amin || Amax != other.Amax;
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	typename AABB<type, size,VectorType>::vector_type AABB<type, size,VectorType>::Center() const
+	typename AABB<type, size, VectorType>::vector_type AABB<type, size, VectorType>::Center() const
 	{
 		return  Amin + (Amax - Amin) / 2;
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	typename AABB<type, size,VectorType>::class_type& AABB<type, size,VectorType>::Merge(const class_type& other)
+	typename AABB<type, size, VectorType>::class_type& AABB<type, size, VectorType>::Merge(const class_type& other)
 	{
 		if (*this == other)
 			return *this;
-		for (int i = 0 ; i < vector_type::vector_size_v ; ++i)
+		for (int i = 0; i < vector_type::vector_size_v; ++i)
 		{
 			Amin.At(i) = Math::Min(Amin.At(i), other.Amin.At(i));
 			Amax.At(i) = Math::Max(Amax.At(i), other.Amax.At(i));
@@ -182,7 +212,7 @@ namespace KT
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	typename AABB<type, size, VectorType>::class_type& AABB<type, size,VectorType>::Expand(const vector_type& vec)
+	typename AABB<type, size, VectorType>::class_type& AABB<type, size, VectorType>::Expand(const vector_type& vec)
 	{
 
 		for (int i = 0; i < vector_type::vector_size_v; ++i)
@@ -194,25 +224,25 @@ namespace KT
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	typename AABB<type,size,VectorType>::vector_type AABB<type, size,VectorType>::Size() const
+	typename AABB<type, size, VectorType>::vector_type AABB<type, size, VectorType>::Size() const
 	{
 		return Amax - Amin;
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	typename AABB<type, size,VectorType>::vector_type AABB<type, size,VectorType>::HalfSize() const
+	typename AABB<type, size, VectorType>::vector_type AABB<type, size, VectorType>::HalfSize() const
 	{
 		return Size() / 2;
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	type AABB<type, size,VectorType>::BoundingRadius() const
+	type AABB<type, size, VectorType>::BoundingRadius() const
 	{
 		return HalfSize().Length();
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	type AABB<type, size,VectorType>::Volume() const
+	type AABB<type, size, VectorType>::Volume() const
 	{
 		vector_type vecSize = Size();
 		type sizeResult = 1;
@@ -224,30 +254,30 @@ namespace KT
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	bool AABB<type, size,VectorType>::operator>(const class_type& other) const
+	bool AABB<type, size, VectorType>::operator>(const class_type& other) const
 	{
 		return Volume() > other.Volume();
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	bool AABB<type, size,VectorType>::operator>=(const class_type& other) const
+	bool AABB<type, size, VectorType>::operator>=(const class_type& other) const
 	{
 		return Volume() >= other.Volume();
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	bool AABB<type, size,VectorType>::operator<(const class_type& other) const
+	bool AABB<type, size, VectorType>::operator<(const class_type& other) const
 	{
 		return Volume() < other.Volume();
 	}
 
 	template<typename type, size_t size, template <typename>class VectorType>requires is_Vector<VectorType<type>>
-	bool AABB<type, size,VectorType>::operator<=(const class_type& other) const
+	bool AABB<type, size, VectorType>::operator<=(const class_type& other) const
 	{
 		return Volume() <= other.Volume();
 	}
 
-	
+
 
 
 

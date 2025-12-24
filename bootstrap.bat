@@ -78,16 +78,6 @@ IF %ERRORLEVEL% NEQ 0 (
     PAUSE
     EXIT /B 1
 )
-
-ECHO Installation de Ogre...
-CALL "%LOCAL_VCPKG_DIR%\vcpkg.exe" install ogre:x64-windows
-IF %ERRORLEVEL% NEQ 0 (
-    ECHO Erreur lors de l'installation de eigen.
-    PAUSE
-    EXIT /B 1
-)
-
-ECHO Ogre3D installe avec succes !
 PAUSE
 EXIT /B 0
 
@@ -142,15 +132,6 @@ IF %ERRORLEVEL% NEQ 0 (
 ECHO Suppression et réinstallation de Eigen...
 CALL "%LOCAL_VCPKG_DIR%\vcpkg.exe" remove eigen3:x64-windows
 CALL "%LOCAL_VCPKG_DIR%\vcpkg.exe" install eigen3:x64-windows
-IF %ERRORLEVEL% NEQ 0 (
-    ECHO Erreur lors de la mise à jour de Eigen.
-    PAUSE
-    EXIT /B 1
-)
-
-ECHO Suppression et réinstallation de Ogre...
-CALL "%LOCAL_VCPKG_DIR%\vcpkg.exe" remove ogre:x64-windows
-CALL "%LOCAL_VCPKG_DIR%\vcpkg.exe" install ogre:x64-windows
 IF %ERRORLEVEL% NEQ 0 (
     ECHO Erreur lors de la mise à jour de Eigen.
     PAUSE

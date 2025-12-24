@@ -1,6 +1,7 @@
 #pragma once
 #include "Math/AABB.h"
 #include "Math/BoundingSphere.h"
+#include "Math/OBB.h"
 #include "Math/VectorND.h"
 
 namespace KT
@@ -46,8 +47,9 @@ namespace KT
 				vector_type rhsCenter = KT::GetCenter(rhsPoints);
 				vector_type Dir = rhsCenter - lhsCenter;
 				// Allaxes
-				for (auto& axe : axes)
+				for (auto& axetoTest : axes)
 				{
+					VectorType<type> axe = axetoTest.Normalize();
 					auto ProjectLeft = GetMinAndMaxFromProjection(lhsPoints, axe);
 					auto ProjectRight = GetMinAndMaxFromProjection(rhsPoints, axe);
 					auto overlapInfo = OverLapResult(ProjectLeft, ProjectRight);
@@ -61,10 +63,10 @@ namespace KT
 
 						minOverlap = overlapInfo.second;
 						if (Dir.Dot(axe) < 0)
-							smallestAxis = (axe * - 1).Normalize();
+							smallestAxis = (axe * -1).Normalize();
 						else
 						{
-							smallestAxis = axe;
+							smallestAxis = axe.Normalize();
 						}
 					}
 				}
@@ -76,7 +78,7 @@ namespace KT
 			}
 		private:
 			template<typename type, template <typename>class VectorType> requires is_Vector<VectorType<type>>
-			static std::pair<type,type> GetMinAndMaxFromProjection(const std::vector<VectorType<type>>& pts, const VectorType<type>& axe)
+			static std::pair<type, type> GetMinAndMaxFromProjection(const std::vector<VectorType<type>>& pts, const VectorType<type>& axe)
 			{
 				type min = std::numeric_limits<type>::max();
 				type max = std::numeric_limits<type>::lowest();
@@ -89,15 +91,14 @@ namespace KT
 				return std::pair<type, type>(min, max);
 			}
 			template<typename type>
-			static std::pair<bool,type> OverLapResult(const std::pair<type, type>& lhs, const std::pair<type, type>& rhs)
+			static std::pair<bool, type> OverLapResult(const std::pair<type, type>& lhs, const std::pair<type, type>& rhs)
 			{
-				if (lhs.first > rhs.second || lhs.second < rhs.first)
+				if (lhs.first >= rhs.second || lhs.second <= rhs.first)
 					return std::pair<bool, type>(false, type());
-				type overlap = Math::Min(lhs.second , rhs.second) - Math::Max(lhs.first,rhs.first);
+				type overlap = Math::Min(lhs.second, rhs.second) - Math::Max(lhs.first, rhs.first);
 				return std::pair<bool, type>(true, overlap);
 			}
 		};
-
 
 	};
 
@@ -136,8 +137,11 @@ namespace KT
 			type dist = distanceBetwenCenter.At(i);
 			type totalHalf = totalHalfSize.At(i);
 			type overlap = totalHalf - std::abs(dist);
-			if (overlap <= 0)
-				throw std::out_of_range("should not pass here");
+			if (overlap < 0)
+			{
+				result.isColliding = false;
+				return result;
+			}
 			if (overlap < minOverlap)
 			{
 				minOverlap = overlap;
@@ -218,7 +222,7 @@ namespace KT
 				axes.push_back(rhs.axes.at(i).Normalize());
 				for (size_t j = 0; j < size; ++j)
 				{
-					auto cross = lhs.axes.at(i).Normalize().Cross(rhs.axes.at(j).Normalize());
+					auto cross = static_cast<KT::Vector3<type>>(lhs.axes.at(i).Normalize()).Cross(rhs.axes.at(j).Normalize());
 					if (!Math::IsNull(cross.SquareLength(), Math::EPSILON_V<type> *Math::EPSILON_V<type>))
 						axes.push_back(cross.Normalize());
 				}

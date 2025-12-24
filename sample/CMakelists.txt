@@ -20,10 +20,7 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
     GameEngine
     Game
-    OgreMain
 )
-
-find_package(OGRE REQUIRED)
 
 find_package(SFML COMPONENTS 
     System

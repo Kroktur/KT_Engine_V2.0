@@ -5,17 +5,18 @@
 
 namespace KT
 {
-	template<typename DerivedType , typename BaseType , typename RootType  >
+	template<typename DerivedType, typename BaseType, typename RootType  >
 	concept IncludeRootVerifier = is_base_of_v<RootType, DerivedType>&& is_base_of_v<BaseType, DerivedType>;
 
 
 
-	template<typename DerivedType, typename BaseType, typename RootType > requires is_base_of_v<BaseType,DerivedType>
-		class CompositeCRTP : public IComposite<BaseType, RootType>
+	template<typename DerivedType, typename BaseType, typename RootType > requires is_base_of_v<BaseType, DerivedType>
+	class CompositeCRTP : public IComposite<BaseType, RootType>
 	{
 	public:
 		using composite = IComposite<BaseType, RootType>;
 		void ExecuteAction(const std::function<void(BaseType*)>& fn) override final;
+		void ExecuteAction(const std::function<void(typename composite::component*)>& fn) override final;
 		BaseType* AsBase() override final;
 		const BaseType* AsBase() const override final;
 	protected:
@@ -28,13 +29,12 @@ namespace KT
 	class ExcludeRootCRTP : public IRoot<BaseType, RootType>
 	{
 	public:
-		using component = IComponent<BaseType, RootType>;
 		using composite = IComposite<BaseType, RootType>;
 		using root = IRoot < BaseType, RootType >;
 
 		~ExcludeRootCRTP() override = default;
 		void ExecuteAction(const std::function<void(BaseType*)>& fn) override final;
-
+		void ExecuteAction(const std::function<void(typename composite::component*)>& fn) override final;
 		BaseType* AsBase() override final;
 		const BaseType* AsBase() const override final;
 
@@ -42,20 +42,20 @@ namespace KT
 		const RootType* AsRoot() const override final;
 
 	protected:
-		void AddFullTree(std::vector<component*>& vec) override final;
+		void AddFullTree(std::vector<typename composite::component*>& vec) override final;
 		ExcludeRootCRTP();
 	};
 
-	template<typename DerivedType, typename BaseType, typename RootType > requires  IncludeRootVerifier<DerivedType,BaseType,RootType>
+	template<typename DerivedType, typename BaseType, typename RootType > requires  IncludeRootVerifier<DerivedType, BaseType, RootType>
 	class IncludeRootCRTP : public IRoot<BaseType, RootType>
 	{
 	public:
-		using component = IComponent<BaseType, RootType>;
 		using composite = IComposite<BaseType, RootType>;
 		using root = IRoot < BaseType, RootType >;
 
 		~IncludeRootCRTP() override = default;
 		void ExecuteAction(const std::function<void(BaseType*)>& fn) override;
+		void ExecuteAction(const std::function<void(typename composite::component*)>& fn) override final;
 
 		BaseType* AsBase() override;
 		const BaseType* AsBase() const override final;
@@ -64,7 +64,7 @@ namespace KT
 		const RootType* AsRoot() const override final;
 
 	protected:
-		void AddFullTree(std::vector<component*>& vec) override final;
+		void AddFullTree(std::vector<typename composite::component*>& vec) override final;
 		IncludeRootCRTP();
 	};
 
@@ -77,7 +77,7 @@ namespace KT
 		using leaf = ILeaf<BaseType, RootType>;
 		~LeafCRTP() override = default;
 		void ExecuteAction(const std::function<void(BaseType*)>& fn) override;
-
+		void ExecuteAction(const std::function<void(typename composite::component*)>& fn) override final;
 		BaseType* AsBase() override;
 		const BaseType* AsBase() const override;
 	protected:
@@ -88,6 +88,15 @@ namespace KT
 	void CompositeCRTP<DerivedType, BaseType, RootType>::ExecuteAction(const std::function<void(BaseType*)>& fn)
 	{
 		fn(static_cast<BaseType*>(static_cast<DerivedType*>(this)));
+		for (auto& child : this->m_child)
+			child->ExecuteAction(fn);
+	}
+
+	template <typename DerivedType, typename BaseType, typename RootType> requires is_base_of_v<BaseType, DerivedType>
+	void CompositeCRTP<DerivedType, BaseType, RootType>::ExecuteAction(
+		const std::function<void(typename composite::component*)>& fn)
+	{
+		fn(this);
 		for (auto& child : this->m_child)
 			child->ExecuteAction(fn);
 	}
@@ -123,6 +132,14 @@ namespace KT
 			child->ExecuteAction(fn);
 	}
 
+	template <typename DerivedType, typename BaseType, typename RootType> requires is_base_of_v<RootType, DerivedType>
+	void ExcludeRootCRTP<DerivedType, BaseType, RootType>::ExecuteAction(
+		const std::function<void(typename composite::component*)>& fn)
+	{
+		for (auto& child : this->m_child)
+			child->ExecuteAction(fn);
+	}
+
 	template <typename DerivedType, typename BaseType, typename RootType>  requires is_base_of_v<RootType, DerivedType>
 	BaseType* ExcludeRootCRTP<DerivedType, BaseType, RootType>::AsBase()
 	{
@@ -148,7 +165,7 @@ namespace KT
 	}
 
 	template <typename DerivedType, typename BaseType, typename RootType>  requires is_base_of_v<RootType, DerivedType>
-	void ExcludeRootCRTP<DerivedType, BaseType, RootType>::AddFullTree(std::vector<component*>& vec)
+	void ExcludeRootCRTP<DerivedType, BaseType, RootType>::AddFullTree(std::vector<typename composite::component*>& vec)
 	{
 		IRoot<BaseType, RootType>::AddFullTree(vec);
 		vec.erase(vec.begin());
@@ -170,8 +187,18 @@ namespace KT
 			child->ExecuteAction(fn);
 	}
 
+	template <typename DerivedType, typename BaseType, typename RootType> requires IncludeRootVerifier<DerivedType,
+		BaseType, RootType>
+	void IncludeRootCRTP<DerivedType, BaseType, RootType>::ExecuteAction(
+		const std::function<void(typename composite::component*)>& fn)
+	{
+		fn(this);
+		for (auto& child : this->m_child)
+			child->ExecuteAction(fn);
+	}
+
 	template <typename DerivedType, typename BaseType, typename RootType> requires  IncludeRootVerifier<DerivedType, BaseType, RootType>
-	 BaseType* IncludeRootCRTP<DerivedType, BaseType, RootType>::AsBase() 
+	BaseType* IncludeRootCRTP<DerivedType, BaseType, RootType>::AsBase()
 	{
 		return static_cast<BaseType*>(static_cast<DerivedType*>(this));
 	}
@@ -194,8 +221,8 @@ namespace KT
 		return  static_cast<const RootType*>(static_cast<const DerivedType*>(this));
 	}
 
-	template <typename DerivedType, typename BaseType, typename RootType> requires  IncludeRootVerifier<DerivedType,BaseType,RootType>
-	void IncludeRootCRTP<DerivedType, BaseType, RootType>::AddFullTree(std::vector<component*>& vec)
+	template <typename DerivedType, typename BaseType, typename RootType> requires  IncludeRootVerifier<DerivedType, BaseType, RootType>
+	void IncludeRootCRTP<DerivedType, BaseType, RootType>::AddFullTree(std::vector<typename composite::component*>& vec)
 	{
 		IRoot<BaseType, RootType>::AddFullTree(vec);
 	}
@@ -209,6 +236,13 @@ namespace KT
 	void LeafCRTP<DerivedType, BaseType, RootType>::ExecuteAction(const std::function<void(BaseType*)>& fn)
 	{
 		fn(static_cast<BaseType*>(static_cast<DerivedType*>(this)));
+	}
+
+	template <typename DerivedType, typename BaseType, typename RootType> requires is_base_of_v<BaseType, DerivedType>
+	void LeafCRTP<DerivedType, BaseType, RootType>::ExecuteAction(
+		const std::function<void(typename composite::component*)>& fn)
+	{
+		fn(this);
 	}
 
 	template <typename DerivedType, typename BaseType, typename RootType> requires is_base_of_v<BaseType, DerivedType>

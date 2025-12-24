@@ -63,7 +63,7 @@ namespace KT
 		using CtorList = typelist<Args...>;
 		// Add cast DerivedTypes through function and add it to dispatcher
 		// Pointer Function to register 
-		template<typename DerivedLhsType, typename DerivedRhsType, ReturnType(*FN)(DerivedLhsType&, DerivedRhsType&, Args&&...), bool Mirror = false>
+		template<typename DerivedLhsType, typename DerivedRhsType, ReturnType(*FN)(DerivedLhsType&, DerivedRhsType&, Args...), bool Mirror = false>
 		void Add()
 		{
 			// Due to inheritance and virtual Destructor cast types to register Derived
@@ -84,7 +84,7 @@ namespace KT
 			m_dispatcher.template Add<DerivedRhsType, DerivedLhsType>(fn2);
 		}
 		//call dispatcher
-		ReturnType operator()(LhsType& lhs, RhsType& rhs, Args&&... args)
+		ReturnType operator()(LhsType& lhs, RhsType& rhs, Args... args)
 		{
 			return m_dispatcher(lhs, rhs, std::forward<Args>(args)...);
 		}

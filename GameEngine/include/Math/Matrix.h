@@ -69,6 +69,7 @@ namespace KT
 
 		template<size_t otherWidth>requires (otherWidth >= 1)
 		Matrix<value_type, height, otherWidth> MatrixProduct(const Matrix<value_type, width, otherWidth>& other);
+		KT::VectorND<type,height> MatrixProduct(const KT::VectorND<type, width>& vec);
 		Matrix<value_type, width, height> Transposition() const;
 		static class_type Identity() requires(height == width);
 		value_type Det()const  requires(height == width);
@@ -392,6 +393,22 @@ namespace KT
 					data += GetCell(row, idx) * other.GetCell(idx, col);
 				result.GetCell(row, col) = Math::IsNull(data, Math::EPSILON_V<type>) ? static_cast<type>(0) : data;
 			}
+		}
+		return result;
+	}
+
+	template <typename type, size_t height, size_t width> requires is_arithmetic_v<type> && (height > 0 && width > 0)
+	VectorND<type, height> Matrix<type, height, width>::MatrixProduct(const VectorND<type, width>& vec)
+	{
+		VectorND<type, height> result;
+		for (size_t row = 0; row < height; ++row)
+		{
+			type sum = 0;
+			for (size_t col = 0; col < width; ++col)
+			{
+				sum += GetCell(row, col) * vec.At(col);
+			}
+			result.At(row) = Math::IsNull(sum, Math::EPSILON_V<type>) ? type(0) : sum;
 		}
 		return result;
 	}

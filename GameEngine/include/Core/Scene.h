@@ -25,7 +25,6 @@ namespace KT
 		{
 			if (!NeedSceneToChange())
 				throw std::runtime_error("change dont need to be change");
-			m_needChange = false;
 			return m_nextSceneIndex;
 		}
 
@@ -60,6 +59,12 @@ namespace KT
 			m_needChange = true;
 			m_nextSceneIndex = index;
 		}
+		void ChangeSceneDone()
+		{
+			if (!m_needChange)
+				throw std::runtime_error("wtf is going on");
+			m_needChange = false;
+		}
 	private:
 		// member function that only the SceneManager can use
 		void SetWindow(WindowType* win)
@@ -67,6 +72,7 @@ namespace KT
 			m_window = win;
 		}
 		virtual void Init() = 0;
+		virtual void Destroy() = 0;
 		WindowType* m_window;
 		std::unique_ptr<Camera> m_cam;
 		int m_nextSceneIndex;

@@ -45,7 +45,6 @@ find_package(SFML COMPONENTS
     Audio
     CONFIG REQUIRED
 )
-find_package(OGRE REQUIRED)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
@@ -55,7 +54,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     SFML::Audio
     SFML::System
     Eigen3::Eigen 
-    OgreMain 
     GameEngine
 )
 

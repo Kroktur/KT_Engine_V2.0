@@ -11,7 +11,7 @@ namespace KT
 	class ResourceManager;
 
 	// take a function that load the resource and return unique_ptr
-	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs&&...)>
+	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs...)>
 	class ResourceManager<TextureType, typelist<ConstructArgs...>, FN >
 	{
 	public:
@@ -34,14 +34,14 @@ namespace KT
 		static std::filesystem::path m_absoluteFilePath;
 		static std::map<std::string, TexturePtr> m_textureMap;
 	};
-	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs&&...)>
+	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs...)>
 	std::filesystem::path ResourceManager<TextureType, typelist<ConstructArgs...>, FN >::m_absoluteFilePath = std::filesystem::path{};
 
-	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs&&...)>
+	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs...)>
 	std::map<std::string, std::unique_ptr<TextureType>> ResourceManager<TextureType, typelist<ConstructArgs...>, FN >::m_textureMap = std::map<std::string, std::unique_ptr<TextureType>>{};
 
 
-	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs&&...)>
+	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs...)>
 	TextureType& ResourceManager<TextureType, typelist<ConstructArgs...>, FN>::Load(const std::string& relativePath,
 		ConstructArgs&&... args)
 	{
@@ -55,7 +55,7 @@ namespace KT
 		return *m_textureMap[fullPath];
 	}
 
-	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs&&...)>
+	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs...)>
 	void ResourceManager<TextureType, typelist<ConstructArgs...>, FN>::SetGlobalFIlePath(
 		const std::filesystem::path& racinePath)
 	{
@@ -66,19 +66,19 @@ namespace KT
 		init = true;
 	}
 
-	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs&&...)>
+	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs...)>
 	ResourceManager<TextureType, typelist<ConstructArgs...>, FN>::~ResourceManager()
 	{
 		m_textureMap.clear();
 	}
 
-	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs&&...)>
+	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs...)>
 	void ResourceManager<TextureType, typelist<ConstructArgs...>, FN>::UnloadAll()
 	{
 		m_textureMap.clear();
 	}
 
-	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs&&...)>
+	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs...)>
 	void ResourceManager<TextureType, typelist<ConstructArgs...>, FN>::Reload(const std::string& relativePath,
 		ConstructArgs&&... args)
 	{
@@ -86,7 +86,7 @@ namespace KT
 		Load(relativePath, std::forward<ConstructArgs>(args)...);
 	}
 
-	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs&&...)>
+	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs...)>
 	void ResourceManager<TextureType, typelist<ConstructArgs...>, FN>::ReloadAll(ConstructArgs&&... args)
 	{
 		for (auto it = m_textureMap.begin(); it != m_textureMap.end(); )
@@ -97,13 +97,13 @@ namespace KT
 		}
 	}
 
-	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs&&...)>
+	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs...)>
 	bool ResourceManager<TextureType, typelist<ConstructArgs...>, FN>::Exists(const std::string& relativePath)
 	{
 		return m_textureMap.contains(GetAbsoluteFilePath(relativePath));
 	}
 
-	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs&&...)>
+	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs...)>
 	bool ResourceManager<TextureType, typelist<ConstructArgs...>, FN>::Exists(TextureType* texture)
 	{
 		auto it = std::find_if(m_textureMap.begin(),
@@ -113,7 +113,7 @@ namespace KT
 		return it != m_textureMap.end();
 	}
 
-	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs&&...)>
+	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs...)>
 	std::string ResourceManager<TextureType, typelist<ConstructArgs...>, FN>::GetRelativePath(TextureType& texture)
 	{
 		auto it = std::find_if(m_textureMap.begin(),
@@ -125,7 +125,7 @@ namespace KT
 		return GetRelativeFilePath(it->first);
 	}
 
-	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs&&...)>
+	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs...)>
 	void ResourceManager<TextureType, typelist<ConstructArgs...>, FN>::Unload(const std::string& relativePath)
 	{
 		if (!Exists(relativePath))
@@ -134,14 +134,14 @@ namespace KT
 	}
 
 	// get the full path
-	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs&&...)>
+	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs...)>
 	std::string ResourceManager<TextureType, typelist<ConstructArgs...>, FN>::GetAbsoluteFilePath(const std::string& relativePath)
 	{
 		auto filePath = m_absoluteFilePath / std::filesystem::path(relativePath);
 		return filePath.string();
 	}
 
-	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs&&...)>
+	template<typename TextureType, typename... ConstructArgs, std::unique_ptr<TextureType>(*FN)(const std::string&, ConstructArgs...)>
 	std::string ResourceManager<TextureType, typelist<ConstructArgs...>, FN>::GetRelativeFilePath(const std::string& AbsolutePath)
 	{
 		std::filesystem::path full = AbsolutePath;
