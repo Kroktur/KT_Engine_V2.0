@@ -47,7 +47,7 @@ find_package(SFML COMPONENTS
 )
 
 # Cherche le package Eigen
-find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+find_package(Eigen3 REQUIRED NO_MODULE)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     SFML::Network
